@@ -1,28 +1,4 @@
 (function() {
-
-    /**
-     *
-     * The focus when writing this code was on getting something done and not on beautiful code.
-     * A rewrite using React could be beneficial...
-     */
-
-    function loadBuffer(source, context, fn) {
-        var request = new XMLHttpRequest();
-        request.open('GET', 'audio/' + source, true);
-        //xhr2 - http://www.html5rocks.com/en/tutorials/file/xhr2/
-        request.responseType = 'arraybuffer';
-        request.onload = function() {
-            // Asynchronously decode the audio file data in request.response
-            context.decodeAudioData(request.response, function(buff) {
-                buffer = buff;
-                fn(buffer);
-            }, function(error) {
-                console.log(error);
-            });
-        };
-        request.send();
-    };
-
     function audioCtx() {
         var audioCtx = (window.AudioContext || window.webkitAudioContext ||
             window.mozAudioContext || window.oAudioContext ||
@@ -235,18 +211,45 @@
         this.render();
     }
 
+    function FetchAudioFile(sourceName, ctx) {
+        return new Promise((resolve, reject) => {
+            fetch('audio/' + sourceName)
+                .then((response) => response.arrayBuffer())
+                .then((buffer) => ctx.decodeAudioData(buffer))
+                .then((decodedAudio) => resolve(
+                    {"name": sourceName, "buffer": decodedAudio}
+                ))
+        });
+    };
+
     function Daw(sources) {
         var self = this;
         this.sources = sources.slice(0);
         this.ctx = audioCtx();
         this.tracks = [];
-        this.buffered = 0;
-        this.bufferTracks(function() {
-            self.mixer = new Mixer(self.ctx, self.tracks);
-            self.hideLoader();
-            self.showMixer();
+
+        this.populateLoader();
+        var promises = [];
+        for (var i = 0; i < this.sources.length; i++) {
+            promises.push(FetchAudioFile(this.sources[i], this.ctx));
+        }
+
+        var tracks = []
+        self.updateLoader(1);
+        for (var i = 0; i < promises.length; i++) {
+            Promise.resolve(promises[i]).then((track) => {
+                tracks.push(track);
+                self.updateLoader(tracks.length);
+            });
+        }
+
+        Promise.all(promises).then(() => {
+            this.tracks = tracks;
+            this.mixer = new Mixer(this.ctx, this.tracks);
+            this.hideLoader();
+            this.showMixer();
             $('#pause').click();
-            self.initHints();
+            this.initHints();
         });
     };
 
@@ -258,33 +261,13 @@
         $('#loader').hide();
     };
 
-    Daw.prototype.bufferTracks = function(cb) {
-        var self = this,
-            source;
-        if (cb) this.cb = cb;
-        this.populateLoader();
-        loadBuffer(this.sources[this.buffered], this.ctx, function(buffer) {
-            self.updateLoader(self.buffered);
-            self.tracks.push({
-                'buffer': buffer,
-                'name': self.sources[self.buffered]
-            });
-            self.buffered++;
-            if (self.tracks.length === self.sources.length) {
-                self.cb();
-            } else {
-                self.bufferTracks();
-            }
-        });
-    };
-
     Daw.prototype.populateLoader = function(current) {
         $('#loader span.total').text(this.sources.length);
         $('#loader').show();
     };
 
     Daw.prototype.updateLoader = function(current) {
-        $('#loader span.current').text(current + 1);
+        $('#loader span.current').text(current);
     };
 
     Daw.prototype.initHints = function() {
@@ -298,7 +281,6 @@
         });
     };
 
-    /* Mixer based on Yamaha's N12 */
     function Mixer(ctx, tracks) {
         var track,
             trackName,
@@ -309,9 +291,7 @@
         this.channels = [];
         this.el = $('#mixer');
         this.ctx = ctx;
-        //hardcode duration for time being as the tracks are longer than the song is audible
-        //Can't be bothered to open pro tools and trim the mp3s
-        this.duration = 200;
+        this.duration = 0;
         this.tracks = tracks;
         self.playingBack = false;
         this.createMasterChannel();
