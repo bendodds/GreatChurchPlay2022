@@ -496,9 +496,9 @@
 
     Channel.prototype.createChannelLabel = function() {
         var trackName = this.trackName.replace('.mp3', '').replace(/_/g,
-            ' ');
+            ' ').replace(/\w+\//g, '');
         this.el.find('.fader-container').prepend('<p class="label">' +
-            trackName.substring(0, trackName.length - 4) + '</p>');
+            trackName + '</p>');
     };
 
     Channel.prototype.enableDisableChannels = function() {
@@ -622,7 +622,6 @@
         }
 
         tracks = tracksBySongName[songName];
-        console.log(tracks);
 
         $('#pause').click();
         $('#transport_container').empty();
@@ -635,22 +634,22 @@
     //These sources could eventually be loaded from the server
     var tracksBySongName = {
         "prolog": [
-            "Instrumental.wav",
-            "Narrator.wav",
-            "All.wav",
-            "Angel.wav",
-            "Elah.wav",
-            "Florinda.wav",
-            "Jack's Mother.wav",
-            "Jack.wav",
-            "Joseph.wav",
-            "Lucinda.wav",
-            "Mary.wav",
-            "Redna's Mother.wav",
-            "Redna.wav",
-            "Stepmother.wav",
-            "Vendor 1.wav",
-            "Vendor 2.wav",
+            "prolog/Instrumental.mp3",
+            "prolog/Narrator.mp3",
+            "prolog/All.mp3",
+            "prolog/Angel.mp3",
+            "prolog/Elah.mp3",
+            "prolog/Florinda.mp3",
+            "prolog/Jack's Mother.mp3",
+            "prolog/Jack.mp3",
+            "prolog/Joseph.mp3",
+            "prolog/Lucinda.mp3",
+            "prolog/Mary.mp3",
+            "prolog/Redna's Mother.mp3",
+            "prolog/Redna.mp3",
+            "prolog/Stepmother.mp3",
+            "prolog/Vendor 1.mp3",
+            "prolog/Vendor 2.mp3",
         ]
     };
 

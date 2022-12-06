@@ -1,0 +1,8 @@
+{
+    "appService.zipIgnorePattern": [
+        "node_modules{,/**}",
+        ".vscode{,/**}"
+    ],
+    "appService.defaultWebAppToDeploy": "/subscriptions/b6d5f4c6-524d-479b-af25-442081c87525/AppServices/subscriptions/b6d5f4c6-524d-479b-af25-442081c87525/resourceGroups/DoddsPersonal/providers/Microsoft.Web/sites/GreatChurchPlay2022",
+    "appService.deploySubpath": "."
+}
