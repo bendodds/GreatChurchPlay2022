@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Great Church Play 2022 - Prolog</title>
+    <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600italic,700italic' rel='stylesheet' type='text/css' />
+    <link href='styles.css' rel='stylesheet' type='text/css' />
+</head>
+
+<body>
+    <div id="container">
+        <div id="select_song_container">
+            <div>
+                <h1>SELECT SONG: </h1>
+                <select name="songselect" id="songselect">
+                    <option value="">--Please choose an option--</option>
+                    <option value="prolog" onclick="selectSong('prolog');">Prolog</option>
+                    <option value="yourefault" onclick="selectSong('yourefault');">You're Fault</option>
+                </select>
+            </div>
+        </div>
+        <div id="loader" unselectable="on" onselectstart="return false;" onmousedown="return false;"><img src="ajax-load.gif" alt="Loading..." />Loading track <span class="current">1</span> of <span class="total">0</span></div>
+        <div id="transport_container" unselectable="on" onselectstart="return false;" onmousedown="return false;"></div>
+        <div id="mixer" unselectable="on" onselectstart="return false;" onmousedown="return false;"></div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="mixer.js"></script>
+</body>
+
+</html>
