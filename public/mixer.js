@@ -324,7 +324,11 @@
     Mixer.prototype.clearBuffers = function(playing) {
         for (var i = 0; i < this.channels.length; ++i) {
             if (playing && this.channels[i].track) {
-                this.channels[i].track.stop(0);
+                try {
+                    this.channels[i].track.stop(0);
+                }
+                catch(err) {
+                }
             }
             this.channels[i].track = null;
         }
@@ -337,7 +341,7 @@
         this.start = 0;
         this.timer = new Timer(self.duration);
         $('#transport_container').append(
-            '<div id="transport"><h1>Prolog</h1><div id="display"><div id="time-min">00</div><span>:</span><div id="time-secs">00</div><span>:</span><div id="time-milli">00</div><div class="clear"></div></div><div class="controls"><button id="play">&#9658;</button><button id="pause">||</button><button id="restart">&#8634</button><button id="back30">&lt; 30s</button><button id="forward30">30s &gt; </button></div></div>'
+            '<div id="transport"><h1>Prolog</h1><div id="display"><div id="time-min">00</div><span>:</span><div id="time-secs">00</div><span>:</span><div id="time-milli">00</div><div class="clear"></div></div><div class="controls"><button id="play">&#9658;</button><button id="pause">||</button><button id="restart">&#8634</button><button id="back30">&lt; 30s</button><button id="back10">&lt; 10s</button><button id="forward10">10s &gt;</button><button id="forward30">30s &gt; </button></div></div>'
         );
         $('#play').on('click', function() {
             var el = $(this);
@@ -403,8 +407,8 @@
             clearInterval(self.playing);
 
             self.offset = Math.max(self.offset - 30, 0);
-            self.start = self.offset;
-            self.elapsed = self.offset;
+            self.start = self.offset * 1000;
+            self.elapsed = self.offset * 1000;
             self.timer.advance(-30000);
 
             if(wasPlaying) {
@@ -420,9 +424,43 @@
             clearInterval(self.playing);
 
             self.offset = Math.min(self.offset + 30, self.duration);
-            self.start = self.offset;
-            self.elapsed = self.offset;
+            self.start = self.offset * 1000;
+            self.elapsed = self.offset * 1000;
             self.timer.advance(30000);
+
+            if(wasPlaying) {
+                $('#play').click();
+            }
+        });
+        $('#back10').on('click', function() {
+            let wasPlaying = self.playingBack;
+
+            self.timer.stop();
+            self.playingBack = false;
+            self.clearBuffers(wasPlaying);
+            clearInterval(self.playing);
+
+            self.offset = Math.max(self.offset - 10, 0);
+            self.start = self.offset * 1000;
+            self.elapsed = self.offset * 1000;
+            self.timer.advance(-10000);
+
+            if(wasPlaying) {
+                $('#play').click();
+            }
+        });
+        $('#forward10').on('click', function() {
+            let wasPlaying = self.playingBack;
+
+            self.timer.stop();
+            self.playingBack = false;
+            self.clearBuffers(wasPlaying);
+            clearInterval(self.playing);
+
+            self.offset = Math.min(self.offset + 10, self.duration);
+            self.start = self.offset * 1000;
+            self.elapsed = self.offset * 1000;
+            self.timer.advance(10000);
 
             if(wasPlaying) {
                 $('#play').click();
@@ -630,6 +668,20 @@
             "prolog/Stepmother.mp3",
             "prolog/Vendor 1.mp3",
             "prolog/Vendor 2.mp3",
+        ],
+        "yourfault": [
+            "yourfault/All.mp3",
+            "yourfault/Angel - Angela.mp3",
+            "yourfault/Angel - Grace.mp3",
+            "yourfault/Angel -Jazna.mp3",
+            "yourfault/Balthazar.mp3",
+            "yourfault/Elah.mp3",
+            "yourfault/Gaspar.mp3",
+            "yourfault/Instrumental.mp3",
+            "yourfault/Jack.mp3",
+            "yourfault/Melchior.mp3",
+            "yourfault/Raziel.mp3",
+            "yourfault/Redna.mp3",
         ]
     };
 
