@@ -670,6 +670,7 @@
             "prolog/Vendor 2.mp3",
         ],
         "yourfault": [
+            "yourfault/Instrumental.mp3",
             "yourfault/All.mp3",
             "yourfault/Angel - Angela.mp3",
             "yourfault/Angel - Grace.mp3",
@@ -677,7 +678,6 @@
             "yourfault/Balthazar.mp3",
             "yourfault/Elah.mp3",
             "yourfault/Gaspar.mp3",
-            "yourfault/Instrumental.mp3",
             "yourfault/Jack.mp3",
             "yourfault/Melchior.mp3",
             "yourfault/Raziel.mp3",
